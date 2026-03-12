@@ -20,6 +20,7 @@ const AdminProducts = () => {
     );
     const data = await res.json();
     setProducts(data);
+    console.log(data);
   };
 
   const deleteProduct = async (id) => {
