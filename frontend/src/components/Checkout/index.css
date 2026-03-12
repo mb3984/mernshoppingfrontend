@@ -1,0 +1,172 @@
+.checkout-page {
+  background: #f1f3f6;
+  min-height: 100vh;
+  padding: 30px;
+}
+
+.checkout-container {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  gap: 25px;
+}
+
+.shipping-card {
+  flex: 2;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+}
+
+.summary-card {
+  flex: 1;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  height: fit-content;
+}
+
+.shipping-card h2,
+.summary-card h2 {
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.form-row {
+  display: flex;
+  gap: 10px;
+}
+
+.payment-method {
+  margin-top: 20px;
+}
+
+.cod-option {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.summary-item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.summary-item img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+}
+
+.summary-prices div {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.total {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.free {
+  color: green;
+}
+
+.place-order-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background: #fb641b;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* --- THE FINAL CHECKOUT FIX --- */
+
+/* 1. Global fix to prevent padding from breaking widths */
+.checkout-page *,
+.checkout-page *::before,
+.checkout-page *::after {
+  box-sizing: border-box;
+}
+
+@media (max-width: 992px) {
+  .checkout-container {
+    flex-direction: column;
+    padding: 10px;
+    margin: 0;
+    width: 100%;
+    gap: 15px;
+  }
+
+  .shipping-card,
+  .summary-card {
+    width: 100%; /* Forces cards to stay inside the screen */
+    flex: none;
+    padding: 20px; /* Slightly less padding to save space */
+  }
+}
+
+@media (max-width: 600px) {
+  .checkout-page {
+    padding: 10px 5px; /* Minimal outer padding */
+  }
+
+  /* 2. Fix for the Input Bar being cut off */
+  .shipping-card input {
+    width: 100% !important; /* Forces input to follow container */
+    max-width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  /* 3. Fix for Form Row (Full Name / Phone) */
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* 4. Order Summary Card visibility fix */
+  .summary-item {
+    display: grid;
+    grid-template-columns: 50px 1fr auto; /* Better layout for narrow screens */
+    gap: 10px;
+    align-items: center;
+  }
+
+  .summary-item img {
+    width: 45px;
+    height: 45px;
+  }
+
+  .summary-item div p {
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Prevents long names from breaking layout */
+    max-width: 150px;
+  }
+
+  .summary-prices div {
+    font-size: 0.9rem;
+  }
+
+  .place-order-btn {
+    font-size: 1rem;
+    padding: 14px;
+    border-radius: 8px;
+  }
+}

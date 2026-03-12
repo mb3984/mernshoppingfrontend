@@ -1,0 +1,224 @@
+.navbar-container {
+  background-color: #1f2937; /* Dark background matching screenshot */
+  color: white;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-main {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+}
+
+/* Logo Styling */
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: white;
+}
+
+.logo-box {
+  background-color: #f97316; /* Orange brand color */
+  color: white;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-weight: 900;
+  font-size: 1.2rem;
+}
+
+.logo-text {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+/* Search Bar Styling */
+.navbar-search {
+  flex: 0 1 500px; /* Expands to a max of 500px */
+  display: flex;
+  margin: 0 20px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px 0 0 4px;
+  outline: none;
+  color: #333;
+}
+
+.search-button {
+  background-color: #f97316;
+  border: none;
+  padding: 0 18px;
+  color: white;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* Action Items Styling */
+.navbar-actions {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  text-decoration: none;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.cart-icon-wrapper {
+  position: relative;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background-color: #f97316;
+  color: white;
+  font-size: 11px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+}
+
+.logout-icon-btn {
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.logout-icon-btn:hover {
+  color: #f87171;
+}
+
+/* Sub-nav Styling (White bar below dark bar) */
+.navbar-sub {
+  background-color: white;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.sub-nav-links {
+  max-width: 1400px;
+  margin: 0 auto;
+  list-style: none;
+  display: flex;
+  gap: 30px;
+  padding: 10px 20px;
+}
+
+.sub-nav-links li {
+  color: #4b5563;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.sub-nav-links li:hover {
+  color: #f97316;
+}
+
+.active-sub-link {
+  color: #f97316 !important;
+  font-weight: bold;
+  border-bottom: 2px solid #f97316;
+}
+
+.sub-nav-links li {
+  cursor: pointer;
+  padding-bottom: 5px;
+  transition: all 0.2s ease;
+}
+
+.sub-nav-links li:hover {
+  color: #f97316;
+}
+
+/* ... Keep all your existing CSS from the top exactly as it is ... */
+
+/* Find your @media (max-width: 768px) section and REPLACE IT with this: */
+
+@media (max-width: 768px) {
+  .navbar-main {
+    flex-wrap: wrap;
+    padding: 10px;
+    justify-content: space-between;
+  }
+
+  .navbar-logo {
+    flex: 1;
+  }
+
+  .navbar-actions {
+    gap: 15px; /* Slightly adjusted for better spacing */
+  }
+
+  /* FIX: Hide only the text labels, NOT the badge */
+  .label-text,
+  .logo-text {
+    display: none;
+  }
+
+  /* Ensure badge is properly positioned on mobile */
+  .cart-badge {
+    display: flex;
+    top: -10px;
+    right: -12px;
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+  }
+
+  .navbar-search {
+    order: 3;
+    flex: 1 1 100%;
+    margin: 10px 0 0 0;
+  }
+
+  .navbar-sub {
+    padding: 0;
+  }
+
+  .sub-nav-links {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    gap: 20px;
+    padding: 12px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .sub-nav-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sub-nav-links li {
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+}

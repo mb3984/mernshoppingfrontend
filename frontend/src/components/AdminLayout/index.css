@@ -1,0 +1,40 @@
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f8fafc; /* Slightly softer gray */
+  width: 100%;
+  overflow: hidden; /* Prevents double scrollbars */
+}
+
+/* This container ensures the sidebar stays fixed while content scrolls */
+.admin-main-container {
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto; /* Content scrolls here */
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-content {
+  padding: 30px;
+  max-width: 1400px; /* Prevents dashboard from getting too wide on huge monitors */
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* --- MOBILE OPTIMIZATION --- */
+
+@media (max-width: 768px) {
+  .admin-layout {
+    flex-direction: column; /* Stack sidebar on top of content for mobile */
+  }
+
+  .admin-main-container {
+    height: auto; /* Allow the whole page to scroll on mobile */
+    overflow-y: visible;
+  }
+
+  .admin-content {
+    padding: 15px; /* Less padding on small screens */
+  }
+}

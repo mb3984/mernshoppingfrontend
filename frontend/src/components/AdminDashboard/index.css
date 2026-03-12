@@ -1,0 +1,239 @@
+/* Container Wrapper */
+.admin-dashboard-wrapper {
+  padding: 20px;
+  background-color: #f8fafc; /* Light gray background */
+  min-height: 100vh;
+}
+
+.main-heading {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 25px;
+}
+
+/* Stats Grid Layout */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* Individual Stat Cards */
+.stat-card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Icon Containers */
+.icon-container {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+}
+
+.orange {
+  background-color: #fff7ed;
+  color: #f97316;
+}
+.blue {
+  background-color: #eff6ff;
+  color: #3b82f6;
+}
+.green {
+  background-color: #f0fdf4;
+  color: #22c55e;
+}
+.purple {
+  background-color: #faf5ff;
+  color: #a855f7;
+}
+
+/* Stat Text Info */
+.stat-info h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.stat-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Recent Orders Section */
+.recent-orders-card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.recent-orders-card h3 {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #1e293b;
+}
+
+/* Dashboard Table */
+.dashboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.dashboard-table th {
+  padding: 12px 15px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.dashboard-table td {
+  padding: 15px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 14px;
+  color: #334155;
+}
+
+.order-id {
+  font-weight: 600;
+  color: #3b82f6;
+}
+
+.price-cell {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* Status Pills */
+.status-pill {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-pill.delivered {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.status-pill.pending {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
+.status-pill.shipped {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* Loader Styling */
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  font-size: 18px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* --- ADMIN DASHBOARD RESPONSIVE --- */
+
+@media (max-width: 768px) {
+  .admin-dashboard-wrapper {
+    padding: 15px; /* Less padding on small screens */
+  }
+
+  .main-heading {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  /* 1. Stats Grid: 2 columns on mobile instead of 1 long list */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 15px 10px;
+    flex-direction: column; /* Icon on top of text */
+    text-align: center;
+    gap: 10px;
+  }
+
+  .icon-container {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .stat-info h2 {
+    font-size: 18px;
+  }
+
+  .stat-info p {
+    font-size: 12px;
+  }
+
+  /* 2. Table Fix: Allow horizontal scrolling */
+  .recent-orders-card {
+    padding: 15px;
+    overflow-x: hidden; /* Prevent parent from scrolling */
+  }
+
+  /* Create a wrapper for the table to scroll independently */
+  .recent-orders-card h3 {
+    font-size: 16px;
+  }
+
+  /* Ensure the table doesn't shrink, but scrolls */
+  .dashboard-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap; /* Prevents text from wrapping into multiple lines */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dashboard-table th,
+  .dashboard-table td {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* On very small phones, go back to 1 column for stats if they look squashed */
+  /* Or keep 2 columns but reduce font size further */
+  .stats-grid {
+    gap: 10px;
+  }
+
+  .stat-card {
+    border-radius: 8px;
+  }
+}
