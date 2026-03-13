@@ -21,7 +21,6 @@ const categoriesList = [
   "Drinks",
 ];
 
-// Note: props are now passed from App.jsx
 const UserDashboard = ({
   activeCategory,
   onCategoryChange,
@@ -29,6 +28,7 @@ const UserDashboard = ({
   onSearchChange,
 }) => {
   const [products, setProducts] = useState([]);
+  const [totalProducts, setTotalProducts] = useState(0); // Store total count from DB
   const [sortOrder, setSortOrder] = useState("Default");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -36,15 +36,16 @@ const UserDashboard = ({
   const { addCartItem } = useContext(CartContext);
   const productsPerPage = 9;
 
-  // RE-FETCH when global category prop or current page changes
+  // Fetch when Category, Page, Search, or Sort changes
   useEffect(() => {
     fetchProducts();
-  }, [activeCategory, currentPage]);
+  }, [activeCategory, currentPage, searchQuery, sortOrder]);
 
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      let url = `https://mernshoppingbackend-ygpp.onrender.com/api/products?page=${currentPage}&limit=50`;
+      // We pass everything to the URL so the Backend handles the logic
+      let url = `https://mernshoppingbackend-ygpp.onrender.com/api/products?page=${currentPage}&limit=${productsPerPage}&sort=${sortOrder}&search=${searchQuery}`;
 
       if (activeCategory !== "All") {
         url += `&category=${activeCategory}`;
@@ -55,6 +56,7 @@ const UserDashboard = ({
 
       if (res.ok) {
         setProducts(data.products || []);
+        setTotalProducts(data.totalCount || 0);
       }
     } catch (err) {
       console.log(err);
@@ -63,24 +65,15 @@ const UserDashboard = ({
     setLoading(false);
   };
 
-  // Search & Sort logic
-  const filteredProducts = products
-    .filter((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    .sort((a, b) => {
-      if (sortOrder === "Price: Low to High") return a.price - b.price;
-      if (sortOrder === "Price: High to Low") return b.price - a.price;
-      return 0;
-    });
+  const totalPages = Math.ceil(totalProducts / productsPerPage);
 
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-  const paginatedProducts = filteredProducts.slice(
-    (currentPage - 1) * productsPerPage,
-    currentPage * productsPerPage,
-  );
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div className="dashboard-wrapper">
-      {/* Navbar now uses global state props */}
       <Navbar
         activeCategory={activeCategory}
         onCategoryChange={(cat) => {
@@ -88,7 +81,10 @@ const UserDashboard = ({
           setCurrentPage(1);
         }}
         searchQuery={searchQuery}
-        onSearchChange={onSearchChange}
+        onSearchChange={(val) => {
+          onSearchChange(val);
+          setCurrentPage(1); // Reset to page 1 when searching
+        }}
       />
 
       <div className="dashboard-body">
@@ -119,7 +115,10 @@ const UserDashboard = ({
                   <li
                     key={sort}
                     className={sortOrder === sort ? "active-filter" : ""}
-                    onClick={() => setSortOrder(sort)}
+                    onClick={() => {
+                      setSortOrder(sort);
+                      setCurrentPage(1);
+                    }}
                   >
                     {sort}
                   </li>
@@ -132,9 +131,7 @@ const UserDashboard = ({
         <main className="main-content">
           <div className="content-header">
             <h1 className="main-title">{activeCategory} Products</h1>
-            <p className="results-text">
-              {filteredProducts.length} items found
-            </p>
+            <p className="results-text">{totalProducts} items found</p>
           </div>
 
           {loading ? (
@@ -143,8 +140,8 @@ const UserDashboard = ({
             </div>
           ) : (
             <div className="product-grid">
-              {paginatedProducts.length > 0 ? (
-                paginatedProducts.map((product) => (
+              {products.length > 0 ? (
+                products.map((product) => (
                   <div key={product._id} className="ecomm-card">
                     <div className="card-image-wrapper">
                       {product.discount > 0 && (
@@ -160,7 +157,6 @@ const UserDashboard = ({
                         {product.brand || "ShopVerse"}
                       </span>
                       <h4 className="p-name">{product.name}</h4>
-
                       <div className="rating-container">
                         <span className="rating-pill">
                           {product.rating || "4.0"} <FaStar size={10} />
@@ -169,7 +165,6 @@ const UserDashboard = ({
                           ({product.numReviews || "0"}+)
                         </span>
                       </div>
-
                       <div className="price-container">
                         <span className="sale-price">₹{product.price}</span>
                         {product.originalPrice && (
@@ -205,7 +200,7 @@ const UserDashboard = ({
             <div className="pagination-controls">
               <button
                 disabled={currentPage === 1}
-                onClick={() => setCurrentPage((p) => p - 1)}
+                onClick={() => handlePageChange(currentPage - 1)}
               >
                 <FiChevronLeft />
               </button>
@@ -214,7 +209,7 @@ const UserDashboard = ({
               </span>
               <button
                 disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage((p) => p + 1)}
+                onClick={() => handlePageChange(currentPage + 1)}
               >
                 <FiChevronRight />
               </button>
