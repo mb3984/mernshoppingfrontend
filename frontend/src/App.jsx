@@ -19,7 +19,6 @@ import ProductDetails from "./components/ProductDetails";
 import NotFound from "./components/NotFound";
 import Cart from "./components/Cart";
 import EditProduct from "./components/EditProduct";
-import Profile from "./components/Profile";
 import OrderSuccess from "./components/OrderSuccess";
 import MyOrders from "./components/MyOrders";
 
@@ -34,6 +33,10 @@ const API = "https://mernshoppingbackend-ygpp.onrender.com/api/cart";
 const App = () => {
   const [cartList, setCartList] = useState([]);
 
+  // NEW: Lifted state for Navigation & Filtering
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+
   const fetchCart = useCallback(async () => {
     const token = localStorage.getItem("jwt_token");
     if (!token) return;
@@ -46,7 +49,7 @@ const App = () => {
           id: item.product._id || item.product,
           name: item.name,
           price: item.price,
-          image_url: item.image, // URL string stored in cart
+          image_url: item.image,
           quantity: item.quantity,
         }));
         setCartList(formattedCart);
@@ -69,13 +72,12 @@ const App = () => {
         data,
         headers: { Authorization: `Bearer ${token}` },
       });
-      await fetchCart(); // Immediate UI update
+      await fetchCart();
     } catch (err) {
       toast.error(err.response?.data?.message || "Action failed");
     }
   };
 
-  // Updated to support custom quantities
   const addCartItem = (productId, quantity = 1) => {
     toast.info("Updating cart...");
     cartRequest(`${API}/add`, "POST", { productId, quantity });
@@ -83,14 +85,13 @@ const App = () => {
 
   const removeCartItem = (productId) =>
     cartRequest(`${API}/${productId}`, "DELETE");
+
   const removeAllCartItems = async () => {
     const token = localStorage.getItem("jwt_token");
     try {
-      // We call the clear endpoint
-      await axios.delete(`${API}/clear`, {
+      await axios.delete(`${API}/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      // Manually clear the local state for an instant UI update
       setCartList([]);
       toast.success("Cart cleared successfully");
     } catch (err) {
@@ -98,19 +99,16 @@ const App = () => {
       toast.error("Failed to clear cart");
     }
   };
+
   const incrementCartItemQuantity = (productId) => {
-    // We don't need to find the item in state,
-    // just tell the backend to ADD 1 to this product
     cartRequest(`${API}/add`, "POST", { productId, quantity: 1 });
   };
+
   const decrementCartItemQuantity = (productId) => {
     const item = cartList.find((each) => each.id === productId);
-
     if (item && item.quantity > 1) {
-      // Tell the backend to ADD -1 (which is subtracting 1)
       cartRequest(`${API}/add`, "POST", { productId, quantity: -1 });
     } else {
-      // If it's the last 1, use your working DELETE route
       removeCartItem(productId);
     }
   };
@@ -126,6 +124,11 @@ const App = () => {
         incrementCartItemQuantity,
         decrementCartItemQuantity,
         removeAllCartItems,
+        // NEW: Exporting these to the entire app via Context
+        activeCategory,
+        setActiveCategory,
+        searchQuery,
+        setSearchQuery,
       }}
     >
       <Routes>
@@ -136,10 +139,22 @@ const App = () => {
         {/* User Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/home" element={<Home />} />
-          <Route path="/user-dashboard" element={<UserDashboard />} />
+
+          {/* Updated: UserDashboard now receives the global filter state */}
+          <Route
+            path="/user-dashboard"
+            element={
+              <UserDashboard
+                activeCategory={activeCategory}
+                onCategoryChange={setActiveCategory}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+              />
+            }
+          />
+
           <Route path="/cart" element={<Cart />} />
           <Route path="/product/:id" element={<ProductDetails />} />
-          <Route path="/profile" element={<Profile />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-success" element={<OrderSuccess />} />
           <Route path="/my-orders" element={<MyOrders />} />

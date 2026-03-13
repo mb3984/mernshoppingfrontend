@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { FaShoppingCart, FaSearch, FaUser, FaSignOutAlt } from "react-icons/fa";
 import CartContext from "../../context/CartContext";
 import "./index.css";
@@ -11,6 +11,7 @@ const Navbar = ({
   onSearchChange,
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { cartList } = useContext(CartContext);
 
   const storedUser = localStorage.getItem("user");
@@ -28,21 +29,45 @@ const Navbar = ({
     "Drinks",
   ];
 
+  // Helper to handle navigation back to the product list
+  const navigateToDashboard = () => {
+    // If we aren't on the dashboard (e.g., on /cart or /my-orders), go there
+    if (location.pathname !== "/user-dashboard") {
+      navigate("/user-dashboard");
+    }
+  };
+
+  const handleCategoryClick = (cat) => {
+    onCategoryChange(cat);
+    navigateToDashboard();
+  };
+
+  const handleSearchChange = (value) => {
+    onSearchChange(value);
+    // If user starts typing while on another page, send them to results
+    if (value !== "" && location.pathname !== "/user-dashboard") {
+      navigate("/user-dashboard");
+    }
+  };
+
   return (
     <header className="navbar-container">
       <div className="navbar-main">
-        <Link to="/home" className="navbar-logo">
+        {/* Logo links to dashboard for users */}
+        <Link to="/user-dashboard" className="navbar-logo">
           <div className="logo-box">S</div>
           <span className="logo-text">ShopVerse</span>
         </Link>
 
+        {/* Search Bar */}
         <div className="navbar-search">
           <input
             type="text"
             placeholder="Search for products..."
             className="search-input"
             value={searchQuery}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            onFocus={navigateToDashboard}
           />
           <button className="search-button" type="button">
             <FaSearch />
@@ -52,7 +77,6 @@ const Navbar = ({
         <div className="navbar-actions">
           <div className="action-item">
             <FaUser className="action-icon" />
-            {/* Added label-text class here */}
             <span className="label-text">{userData.name}</span>
           </div>
 
@@ -63,7 +87,6 @@ const Navbar = ({
                 <span className="cart-badge">{cartList.length}</span>
               )}
             </div>
-            {/* Added label-text class here */}
             <span className="label-text">Cart</span>
           </Link>
 
@@ -85,7 +108,7 @@ const Navbar = ({
             <li
               key={cat}
               className={activeCategory === cat ? "active-sub-link" : ""}
-              onClick={() => onCategoryChange(cat)}
+              onClick={() => handleCategoryClick(cat)}
             >
               {cat}
             </li>

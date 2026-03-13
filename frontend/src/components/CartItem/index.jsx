@@ -25,44 +25,52 @@ const CartItem = ({ cartItem }) => {
       <div className="cart-item-content">
         <div className="cart-item-header">
           <h3 className="cart-item-name">{name}</h3>
+          {/* Desktop/Tablet Remove Icon */}
           <button
-            className="cart-item-remove-icon"
+            type="button"
+            className="cart-item-remove-icon-desktop"
             onClick={() => removeCartItem(id)}
+            aria-label="Remove item"
           >
             <AiFillCloseCircle size={22} />
           </button>
         </div>
 
-        {/* Quantity */}
-        <div className="cart-quantity-row">
-          <button
-            className="qty-btn"
-            onClick={() => decrementCartItemQuantity(id)}
-          >
-            <BsDashSquare />
-          </button>
+        <div className="cart-controls-row">
+          {/* Quantity Controls */}
+          <div className="cart-quantity-row">
+            <button
+              type="button"
+              className="qty-btn"
+              onClick={() => decrementCartItemQuantity(id)}
+            >
+              <BsDashSquare size={18} />
+            </button>
+            <span className="cart-qty">{quantity} kg</span>
+            <button
+              type="button"
+              className="qty-btn"
+              onClick={() => incrementCartItemQuantity(id)}
+            >
+              <BsPlusSquare size={18} />
+            </button>
+          </div>
 
-          <span className="cart-qty">{quantity} kg</span>
-
-          <button
-            className="qty-btn"
-            onClick={() => incrementCartItemQuantity(id)}
-          >
-            <BsPlusSquare />
-          </button>
+          {/* Price Information */}
+          <div className="cart-price-info">
+            <p className="cart-total">
+              <FaRupeeSign /> {totalPrice.toLocaleString("en-IN")}
+            </p>
+          </div>
         </div>
 
-        {/* Price */}
-        <div className="cart-price-row">
-          <p className="cart-total">
-            <FaRupeeSign /> {totalPrice}
-          </p>
-          <p className="cart-per-kg">₹{price} / kg</p>
-        </div>
-
-        {/* Remove Button (Mobile) */}
-        <button className="cart-remove-btn" onClick={() => removeCartItem(id)}>
-          Remove
+        {/* Mobile-only Remove Button */}
+        <button
+          type="button"
+          className="cart-remove-btn-mobile"
+          onClick={() => removeCartItem(id)}
+        >
+          Remove Item
         </button>
       </div>
     </li>

@@ -9,6 +9,11 @@ const CartContext = React.createContext({
   incrementCartItemQuantity: () => {},
   decrementCartItemQuantity: () => {},
   removeAllCartItems: () => {},
+  // Add these for better autocomplete and consistency
+  activeCategory: "All",
+  setActiveCategory: () => {},
+  searchQuery: "",
+  setSearchQuery: () => {},
 });
 
 CartContext.displayName = "CartContext";

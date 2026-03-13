@@ -1,50 +1,19 @@
-import { useContext, useState } from "react";
-import Payment from "../Payment";
+import { useContext } from "react";
 import CartItem from "../CartItem";
-import CartTotal from "../CartTotal";
 import CartContext from "../../context/CartContext";
 import "./index.css";
 
 const CartListView = () => {
-  const [isOrderPlaced, setIsOrderPlaced] = useState(false);
-  const { cartList, removeAllCartItems } = useContext(CartContext);
+  const { cartList } = useContext(CartContext);
 
-  const orderPlaced = () => {
-    setIsOrderPlaced(true);
-  };
-
-  const onClickRemoveAllBtn = () => {
-    if (window.confirm("Remove all items from cart?")) {
-      removeAllCartItems();
-    }
-  };
-
-  if (isOrderPlaced) {
-    return <Payment />;
-  }
-
+  // This component now ONLY renders the list of items.
+  // The Header, Remove All button, and Total are managed by Cart.jsx.
   return (
-    <div className="cart-page-container">
-      {/* Header */}
-      <div className="cart-header">
-        <h1 className="cart-title">My Cart</h1>
-        {cartList.length > 0 && (
-          <button className="remove-all-btn" onClick={onClickRemoveAllBtn}>
-            Remove All
-          </button>
-        )}
-      </div>
-
-      {/* Cart Items */}
-      <ul className="cart-items-list">
-        {cartList.map((item) => (
-          <CartItem key={item.id} cartItem={item} />
-        ))}
-      </ul>
-
-      {/* Total */}
-      <CartTotal orderPlaced={orderPlaced} />
-    </div>
+    <ul className="cart-items-list">
+      {cartList.map((item) => (
+        <CartItem key={item.id} cartItem={item} />
+      ))}
+    </ul>
   );
 };
 

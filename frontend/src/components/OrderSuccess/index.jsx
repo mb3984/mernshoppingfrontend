@@ -1,10 +1,16 @@
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Navbar";
 import Footer from "../Footer";
+import CartContext from "../../context/CartContext"; // Import Context
 import "./index.css";
 
 const OrderSuccess = () => {
   const navigate = useNavigate();
+
+  // Access global state for the Navbar
+  const { activeCategory, setActiveCategory, searchQuery, setSearchQuery } =
+    useContext(CartContext);
 
   const goOrders = () => {
     navigate("/my-orders");
@@ -16,10 +22,20 @@ const OrderSuccess = () => {
 
   return (
     <>
-      {" "}
-      <Navbar />
+      {/* Pass the global state to Navbar */}
+      <Navbar
+        activeCategory={activeCategory}
+        onCategoryChange={setActiveCategory}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+      />
+
       <div className="order-success-container">
         <div className="success-card">
+          <div className="success-icon-wrapper">
+            {/* You can add a checkmark icon here if you have one */}
+            <span className="success-checkmark">✔</span>
+          </div>
           <h1>Order Placed Successfully!</h1>
 
           <p>

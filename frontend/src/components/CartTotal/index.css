@@ -1,16 +1,4 @@
-/* Wrapper */
-.cart-total-wrapper {
-  margin-top: 20px;
-}
-
-/* Divider */
-.cart-divider {
-  border: none;
-  border-top: 1px solid #ddd;
-  margin-bottom: 16px;
-}
-
-/* Card */
+/* Card Container */
 .cart-total-card {
   background: #f9f9f9;
   padding: 16px 20px;
@@ -19,9 +7,11 @@
   justify-content: space-between;
   align-items: center;
   gap: 16px;
+  border: 1px solid #eee;
+  margin-top: 20px;
 }
 
-/* Total Info */
+/* Total Amount Info */
 .total-info {
   display: flex;
   flex-direction: column;
@@ -41,9 +31,9 @@
   gap: 4px;
 }
 
-/* Button */
-.place-order-btn {
-  background-color: #2e7d32;
+/* Proceed to Checkout Button Styles */
+.proceed-checkout-btn {
+  background-color: #ff7011; /* Using your brand orange */
   color: #fff;
   border: none;
   padding: 10px 22px;
@@ -54,30 +44,25 @@
   transition: background 0.3s ease;
 }
 
-.place-order-btn:hover {
-  background-color: #1b5e20;
+.proceed-checkout-btn:hover {
+  background-color: #e6640f;
 }
 
-/* Tablet */
+/* Responsiveness */
 @media (max-width: 768px) {
   .cart-total-card {
     flex-direction: column;
     align-items: stretch;
     text-align: center;
+    gap: 12px;
   }
 
-  .place-order-btn {
+  .proceed-checkout-btn {
     width: 100%;
   }
-}
 
-/* Mobile */
-@media (max-width: 480px) {
   .order-total-amount {
+    justify-content: center;
     font-size: 1.2rem;
-  }
-
-  .cart-total-card {
-    padding: 14px;
   }
 }

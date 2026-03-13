@@ -1,42 +1,43 @@
 import { useContext } from "react";
-import { FaRupeeSign } from "react-icons/fa";
+import CartItem from "../CartItem";
 import CartContext from "../../context/CartContext";
 import "./index.css";
 
-const CartTotal = ({ orderPlaced }) => {
-  const { cartList } = useContext(CartContext);
+const CartListView = () => {
+  const { cartList, removeAllCartItems } = useContext(CartContext);
 
-  // Calculate total order cost
-  const totalOrderCost = cartList.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0,
-  );
+  const onClickRemoveAllBtn = () => {
+    if (window.confirm("Remove all items from cart?")) {
+      removeAllCartItems();
+    }
+  };
 
   return (
-    <>
-      <hr className="cart-hr-line" />
-
-      <div className="cart-total-container">
-        <h1 className="total-text">Order Total:</h1>
-
-        <div className="total-container">
-          <p data-testid="total-price" className="total-price">
-            <FaRupeeSign className="rupee-icon" />{" "}
-            {totalOrderCost.toLocaleString("en-IN")}
-          </p>
-
-          <button
-            type="button"
-            className="order-button"
-            onClick={orderPlaced}
-            disabled={cartList.length === 0}
-          >
-            Place Order
+    <div className="cart-page-container">
+      <div className="cart-header">
+        <h1 className="cart-title">My Cart</h1>
+        {cartList.length > 0 && (
+          <button className="remove-all-btn" onClick={onClickRemoveAllBtn}>
+            Remove All
           </button>
-        </div>
+        )}
       </div>
-    </>
+
+      {cartList.length === 0 ? (
+        <div className="empty-cart-view">
+          <p>Your cart is empty.</p>
+        </div>
+      ) : (
+        <ul className="cart-items-list">
+          {cartList.map((item) => (
+            <CartItem key={item.id} cartItem={item} />
+          ))}
+        </ul>
+      )}
+
+      {/* CartTotal removed from here as per your request */}
+    </div>
   );
 };
 
-export default CartTotal;
+export default CartListView;

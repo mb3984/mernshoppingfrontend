@@ -21,10 +21,14 @@ const categoriesList = [
   "Drinks",
 ];
 
-const UserDashboard = () => {
+// Note: props are now passed from App.jsx
+const UserDashboard = ({
+  activeCategory,
+  onCategoryChange,
+  searchQuery,
+  onSearchChange,
+}) => {
   const [products, setProducts] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [searchQuery, setSearchQuery] = useState("");
   const [sortOrder, setSortOrder] = useState("Default");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -32,26 +36,24 @@ const UserDashboard = () => {
   const { addCartItem } = useContext(CartContext);
   const productsPerPage = 9;
 
-  // RE-FETCH when category or page changes
+  // RE-FETCH when global category prop or current page changes
   useEffect(() => {
     fetchProducts();
-  }, [selectedCategory, currentPage]);
+  }, [activeCategory, currentPage]);
 
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      // Build API URL with category filter
       let url = `https://mernshoppingbackend-ygpp.onrender.com/api/products?page=${currentPage}&limit=50`;
 
-      if (selectedCategory !== "All") {
-        url += `&category=${selectedCategory}`;
+      if (activeCategory !== "All") {
+        url += `&category=${activeCategory}`;
       }
 
       const res = await fetch(url);
       const data = await res.json();
 
       if (res.ok) {
-        // Based on your backend: res.json({ success: true, products, totalCount })
         setProducts(data.products || []);
       }
     } catch (err) {
@@ -61,7 +63,7 @@ const UserDashboard = () => {
     setLoading(false);
   };
 
-  // Search & Sort (Category filtering is now handled by Backend)
+  // Search & Sort logic
   const filteredProducts = products
     .filter((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase()))
     .sort((a, b) => {
@@ -78,14 +80,15 @@ const UserDashboard = () => {
 
   return (
     <div className="dashboard-wrapper">
+      {/* Navbar now uses global state props */}
       <Navbar
-        activeCategory={selectedCategory}
+        activeCategory={activeCategory}
         onCategoryChange={(cat) => {
-          setSelectedCategory(cat);
+          onCategoryChange(cat);
           setCurrentPage(1);
         }}
         searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
+        onSearchChange={onSearchChange}
       />
 
       <div className="dashboard-body">
@@ -96,9 +99,9 @@ const UserDashboard = () => {
               {categoriesList.map((cat) => (
                 <li
                   key={cat}
-                  className={selectedCategory === cat ? "active-filter" : ""}
+                  className={activeCategory === cat ? "active-filter" : ""}
                   onClick={() => {
-                    setSelectedCategory(cat);
+                    onCategoryChange(cat);
                     setCurrentPage(1);
                   }}
                 >
@@ -128,7 +131,7 @@ const UserDashboard = () => {
 
         <main className="main-content">
           <div className="content-header">
-            <h1 className="main-title">{selectedCategory} Products</h1>
+            <h1 className="main-title">{activeCategory} Products</h1>
             <p className="results-text">
               {filteredProducts.length} items found
             </p>
@@ -192,7 +195,7 @@ const UserDashboard = () => {
                 ))
               ) : (
                 <p className="no-products">
-                  No products found in this category.
+                  No products found matching your criteria.
                 </p>
               )}
             </div>
