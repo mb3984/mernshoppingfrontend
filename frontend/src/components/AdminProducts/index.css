@@ -5,9 +5,9 @@
   --text-main: #1e293b;
   --text-muted: #64748b;
   --border-color: #e2e8f0;
-  --primary-orange: #f97316; /* Your main theme color */
+  --primary-orange: #f97316;
   --edit-blue: #3b82f6;
-  --danger-red: #ef4444; /* Standard 'Destructive' Red */
+  --danger-red: #ef4444;
   --danger-hover: #dc2626;
 }
 
@@ -71,7 +71,7 @@
   font-weight: 600;
 }
 
-/* Column Ratios */
+/* Column Ratios for Desktop */
 .products-table th:nth-child(1) {
   width: 40%;
 }
@@ -125,7 +125,7 @@
   color: white;
 }
 
-/* --- MOBILE VIEW --- */
+/* --- MOBILE VIEW (Fixing Stretched Images) --- */
 .mobile-products-view {
   display: none;
 }
@@ -148,6 +148,40 @@
     box-sizing: border-box;
   }
 
+  .product-card-top {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+  }
+
+  /* IMAGE FIX: Prevents large stretching */
+  .mobile-product-img {
+    width: 80px !important;
+    height: 80px !important;
+    min-width: 80px;
+    border-radius: 8px;
+    object-fit: cover; /* Maintains aspect ratio */
+    border: 1px solid var(--border-color);
+  }
+
+  .mobile-product-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow: hidden;
+  }
+
+  .mobile-product-details h4 {
+    margin: 0;
+    font-size: 16px;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   .product-card-bottom {
     display: flex;
     justify-content: space-between;
@@ -156,7 +190,11 @@
     border-top: 1px solid #f1f5f9;
   }
 
-  /* Red Delete Button for Mobile */
+  .mobile-actions {
+    display: flex;
+    gap: 12px;
+  }
+
   .delete-btn {
     background-color: #fef2f2;
     color: var(--danger-red);
