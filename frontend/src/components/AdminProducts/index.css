@@ -1,191 +1,131 @@
-/* ============================================================
-   1. CORE LAYOUT & WRAPPERS
-   ============================================================ */
+/* --- ROOT VARIABLES --- */
 :root {
-  --primary: #f97316; /* Orange Theme */
-  --primary-hover: #ea580c;
   --bg-main: #f8fafc;
+  --white: #ffffff;
   --text-main: #1e293b;
   --text-muted: #64748b;
-  --white: #ffffff;
-  --shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --border-color: #e2e8f0;
+  --primary-orange: #f97316; /* Your main theme color */
+  --edit-blue: #3b82f6;
+  --danger-red: #ef4444; /* Standard 'Destructive' Red */
+  --danger-hover: #dc2626;
 }
 
-.admin-layout {
-  display: flex;
-  min-height: 100vh;
-  background: var(--bg-main);
-  width: 100%;
-}
-
-.admin-main-container {
-  flex: 1;
-  height: 100vh;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-}
-
+/* --- WRAPPER --- */
 .admin-content-wrapper {
-  padding: 30px;
-  max-width: 1400px;
-  margin: 0 auto;
+  padding: 20px;
+  background-color: var(--bg-main);
+  min-height: 100vh;
   width: 100%;
+  box-sizing: border-box;
 }
 
-.main-heading {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 25px;
+.page-header {
+  max-width: 1200px;
+  margin: 0 auto 24px auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* ============================================================
-   2. DESKTOP TABLE VIEW (Optimized for Large Screens)
-   ============================================================ */
+.add-product-btn {
+  background-color: var(--primary-orange);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+/* --- DESKTOP TABLE VIEW --- */
 .desktop-table-view {
+  display: block;
+  max-width: 1200px;
+  margin: 0 auto;
   background: var(--white);
   border-radius: 12px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
   overflow: hidden;
 }
 
 .products-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.products-table th,
+.products-table td {
+  padding: 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .products-table th {
   background-color: #f1f5f9;
-  padding: 15px 20px;
-  text-align: left;
-  font-size: 13px;
-  font-weight: 600;
   color: var(--text-muted);
+  font-size: 13px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-weight: 600;
 }
 
-.products-table td {
-  padding: 12px 20px; /* Reduced vertical padding for a tighter look */
-  border-bottom: 1px solid #f1f5f9;
-  font-size: 14px;
-  color: var(--text-main);
-  vertical-align: middle;
+/* Column Ratios */
+.products-table th:nth-child(1) {
+  width: 40%;
+}
+.products-table th:nth-child(2) {
+  width: 20%;
+}
+.products-table th:nth-child(3) {
+  width: 15%;
+}
+.products-table th:nth-child(4) {
+  width: 10%;
+}
+.products-table th:nth-child(5) {
+  width: 15%;
 }
 
-/* --- Image Size Fix for Large Devices --- */
 .product-cell {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
 
 .product-img {
-  width: 45px; /* Fixed small size for desktop */
-  height: 45px;
-  border-radius: 6px;
-  object-fit: cover;
-  border: 1px solid #e2e8f0;
-  flex-shrink: 0; /* Prevents image from squishing */
-}
-
-.product-info-text {
-  display: flex;
-  flex-direction: column;
-}
-
-.product-name {
-  font-weight: 600;
-  color: var(--text-main);
-  line-height: 1.2;
-}
-
-.product-brand {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-/* ============================================================
-   3. ACTION BUTTONS (Clean & Balanced)
-   ============================================================ */
-.actions-cell {
-  display: flex;
-  gap: 10px;
-}
-
-.edit-icon,
-.delete-icon {
-  width: 36px;
-  height: 36px;
+  width: 48px !important;
+  height: 48px !important;
   border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  border: none;
+  object-fit: cover;
 }
 
+/* --- ACTION BUTTONS (DESKTOP) --- */
 .edit-icon {
+  color: var(--edit-blue);
   background: #eff6ff;
-  color: #3b82f6;
-  text-decoration: none;
-}
-.delete-icon {
-  background: #fef2f2;
-  color: #ef4444;
-}
-
-.edit-icon:hover {
-  background: #3b82f6;
-  color: white;
-}
-.delete-icon:hover {
-  background: #ef4444;
-  color: white;
-}
-
-/* ============================================================
-   4. STATUS PILLS & DROPDOWNS
-   ============================================================ */
-.status-pill {
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.status-pill.delivered {
-  background: #dcfce7;
-  color: #15803d;
-}
-.status-pill.pending {
-  background: #fef3c7;
-  color: #b45309;
-}
-.status-pill.shipped {
-  background: #dbeafe;
-  color: #1d4ed8;
-}
-.status-pill.cancelled {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-.status-dropdown {
-  padding: 6px 10px;
-  border: 1px solid #e2e8f0;
+  padding: 8px;
   border-radius: 6px;
-  font-size: 13px;
-  background: white;
+  transition: 0.2s;
 }
 
-/* ============================================================
-   5. MOBILE VIEW (Hybrid Logic)
-   ============================================================ */
+.delete-icon {
+  color: var(--danger-red);
+  background: #fef2f2;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.delete-icon:hover {
+  background: var(--danger-red);
+  color: white;
+}
+
+/* --- MOBILE VIEW --- */
 .mobile-products-view {
   display: none;
 }
@@ -197,35 +137,35 @@
   .mobile-products-view {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 16px;
   }
 
   .product-mobile-card {
-    background: var(--white);
+    background: white;
+    padding: 16px;
     border-radius: 12px;
-    padding: 15px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border-color);
+    box-sizing: border-box;
   }
 
-  .mobile-product-img {
-    width: 60px; /* Slightly larger on mobile for visibility */
-    height: 60px;
-    border-radius: 8px;
-    object-fit: cover;
-  }
-}
-
-/* ============================================================
-   6. EXTRA LARGE SCREEN TWEAKS
-   ============================================================ */
-@media (min-width: 1200px) {
-  /* Keeps the image size strictly controlled even on 4K monitors */
-  .product-img {
-    width: 42px;
-    height: 42px;
+  .product-card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid #f1f5f9;
   }
 
-  .products-table td {
-    padding: 15px 20px;
+  /* Red Delete Button for Mobile */
+  .delete-btn {
+    background-color: #fef2f2;
+    color: var(--danger-red);
+    border: 1px solid #fee2e2;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
   }
 }

@@ -3,6 +3,8 @@
   padding: 25px;
   background-color: #f8fafc;
   min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box; /* Padding ni width lo adjust chestundi */
 }
 
 .main-heading {
@@ -12,11 +14,10 @@
   margin-bottom: 20px;
 }
 
-/* --- VIEW TOGGLING LOGIC --- */
+/* --- VIEW TOGGLING --- */
 .mobile-orders-view {
-  display: none; /* Hidden on Desktop */
+  display: none;
 }
-
 .desktop-table-view {
   display: block;
   background: white;
@@ -25,39 +26,22 @@
   overflow: hidden;
 }
 
-/* --- DESKTOP TABLE STYLES --- */
+/* --- DESKTOP TABLE --- */
 .products-table {
   width: 100%;
   border-collapse: collapse;
 }
-
 .products-table th {
   background-color: #f1f5f9;
   padding: 15px;
   text-align: left;
   font-size: 13px;
-  font-weight: 600;
   color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
-
 .products-table td {
   padding: 16px;
   border-bottom: 1px solid #f1f5f9;
   font-size: 14px;
-  color: #334155;
-  vertical-align: middle;
-}
-
-.order-id {
-  font-weight: 600;
-  color: #3b82f6;
-}
-
-.price-cell {
-  font-weight: 700;
-  color: #0f172a;
 }
 
 /* --- STATUS PILLS --- */
@@ -67,55 +51,23 @@
   font-size: 12px;
   font-weight: 600;
   display: inline-block;
-  text-align: center;
 }
-
 .status-pill.delivered {
   background-color: #dcfce7;
   color: #15803d;
-}
-.status-pill.shipped {
-  background-color: #dbeafe;
-  color: #1d4ed8;
-}
-.status-pill.processing {
-  background-color: #e0f2fe;
-  color: #0369a1;
 }
 .status-pill.pending {
   background-color: #fef3c7;
   color: #b45309;
 }
-.status-pill.cancelled {
-  background-color: #fee2e2;
-  color: #b91c1c;
-}
 
-/* --- DROPDOWN STYLING --- */
-.status-dropdown {
-  padding: 8px 12px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  background-color: #fff;
-  color: #475569;
-  font-size: 13px;
-  cursor: pointer;
-  outline: none;
-  transition: all 0.2s;
-}
-
-.status-dropdown:focus {
-  border-color: #f97316;
-  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.1);
-}
-
-/* --- MOBILE RESPONSIVE (THE "CARD" TRANSFORMATION) --- */
+/* --- MOBILE RESPONSIVE FIXES --- */
 @media (max-width: 768px) {
   .admin-content-wrapper {
-    padding: 15px;
+    padding: 12px;
+    overflow-x: hidden; /* Right side extra space prevent chestundi */
   }
 
-  /* Hide Table, Show Cards */
   .desktop-table-view {
     display: none;
   }
@@ -123,76 +75,48 @@
   .mobile-orders-view {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
+    width: 100%;
   }
 
-  /* Order Card Styling */
   .order-mobile-card {
     background: white;
     border-radius: 12px;
     padding: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     border: 1px solid #e2e8f0;
+    width: 100%;
+    box-sizing: border-box; /* Card screen bayataku velladu */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   }
 
   .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
-    padding-bottom: 10px;
     border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
   }
 
   .card-body p {
-    margin: 8px 0;
-    font-size: 14px;
     display: flex;
     justify-content: space-between;
-  }
-
-  .card-body p strong {
-    color: #64748b;
-    font-weight: 500;
+    margin: 6px 0;
+    font-size: 14px;
+    flex-wrap: wrap; /* Data ekkuvunte automatic ga wrap avthundi */
   }
 
   .card-actions {
     margin-top: 15px;
-    padding-top: 15px;
+    padding-top: 10px;
     border-top: 1px dashed #e2e8f0;
     display: flex;
     flex-direction: column;
     gap: 8px;
   }
 
-  .card-actions label {
-    font-size: 12px;
-    font-weight: 700;
-    color: #94a3b8;
-    text-transform: uppercase;
+  .status-dropdown {
+    width: 100%;
+    padding: 10px;
   }
-
-  .card-actions .status-dropdown {
-    width: 100%; /* Easy to tap with thumb */
-    padding: 12px;
-    font-size: 14px;
-  }
-}
-
-/* --- SIDEBAR LOGOUT --- */
-.sidebar-logout {
-  margin-top: auto;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #ef4444;
-  padding: 12px;
-  cursor: pointer;
-  font-weight: 600;
-  border-radius: 8px;
-  transition: background 0.2s;
-}
-
-.sidebar-logout:hover {
-  background-color: #fee2e2;
 }
