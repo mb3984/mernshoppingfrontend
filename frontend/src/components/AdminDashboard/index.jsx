@@ -1,138 +1,217 @@
-import { useEffect, useState } from "react";
-import { FaBox, FaShoppingCart, FaDollarSign, FaUsers } from "react-icons/fa";
+import { useEffect, useState, useCallback } from "react";
+import { Link } from "react-router-dom";
+import { FaEdit, FaTrash, FaPlus, FaBoxOpen } from "react-icons/fa";
+import { toast } from "react-toastify"; // Optional: For better alerts
 import "./index.css";
 
-const AdminDashboard = () => {
-  const [stats, setStats] = useState({
-    products: 0,
-    orders: 0,
-    revenue: 0,
-    users: 0,
-  });
-  const [recentOrders, setRecentOrders] = useState([]);
+const AdminProducts = () => {
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
+  const fetchProducts = useCallback(async () => {
+    setLoading(true);
+    try {
       const token = localStorage.getItem("jwt_token");
-      try {
-        // Fetch Stats
-        const statsRes = await fetch(
-          "https://mernshoppingbackend-ygpp.onrender.com/api/admin/dashboard",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
-        const statsData = await statsRes.json();
-        setStats(statsData);
-
-        // Fetch Recent Orders (using your existing admin order route)
-        const ordersRes = await fetch(
-          "https://mernshoppingbackend-ygpp.onrender.com/api/orders/admin",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
-        const ordersData = await ordersRes.json();
-        setRecentOrders(ordersData.slice(0, 5)); // Just take the last 5
-      } catch (error) {
-        console.error("Dashboard error:", error);
-      } finally {
-        setLoading(false);
+      const res = await fetch(
+        "https://mernshoppingbackend-ygpp.onrender.com/api/products/admin/all",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      const data = await res.json();
+      if (res.ok) {
+        setProducts(data);
       }
-    };
-
-    fetchDashboardData();
+    } catch (err) {
+      console.error("Fetch Error:", err);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  if (loading) return <div className="loader">Loading Dashboard...</div>;
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  const deleteProduct = async (id) => {
+    const token = localStorage.getItem("jwt_token");
+    if (!window.confirm("Are you sure you want to delete this product? 🗑️"))
+      return;
+
+    try {
+      const res = await fetch(
+        `https://mernshoppingbackend-ygpp.onrender.com/api/products/${id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      if (res.ok) {
+        setProducts((prev) => prev.filter((p) => p._id !== id));
+        alert("Product deleted successfully!");
+      }
+    } catch (err) {
+      alert("Failed to delete product");
+    }
+  };
+
+  if (loading) return <div className="admin-loader">Fetching Products...</div>;
 
   return (
-    <div className="admin-dashboard-wrapper">
-      <h1 className="main-heading">Dashboard</h1>
-
-      {/* Stats Cards Section */}
-      <div className="stats-grid">
-        <div className="stat-card">
-          <div className="icon-container orange">
-            <FaBox />
-          </div>
-          <div className="stat-info">
-            <h2>{stats.products}</h2>
-            <p>Total Products</p>
-          </div>
+    <div className="admin-content-wrapper">
+      <div className="page-header">
+        <div className="header-text">
+          <h2 className="main-heading">Inventory Management</h2>
+          <p className="sub-text">Total Items: {products.length}</p>
         </div>
-
-        <div className="stat-card">
-          <div className="icon-container blue">
-            <FaShoppingCart />
-          </div>
-          <div className="stat-info">
-            <h2>{stats.orders}</h2>
-            <p>Total Orders</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="icon-container green">
-            <FaDollarSign />
-          </div>
-          <div className="stat-info">
-            <h2>${stats.revenue.toLocaleString()}</h2>
-            <p>Revenue</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <div className="icon-container purple">
-            <FaUsers />
-          </div>
-          <div className="stat-info">
-            <h2>{stats.users}</h2>
-            <p>Customers</p>
-          </div>
-        </div>
+        <Link to="/admin/addProduct" className="add-product-btn">
+          <FaPlus /> Add Product
+        </Link>
       </div>
 
-      {/* Recent Orders Table */}
-      <div className="recent-orders-card">
-        <h3>Recent Orders</h3>
-        <table className="dashboard-table">
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Date</th>
-              <th>Amount</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {recentOrders.map((order) => (
-              <tr key={order._id}>
-                <td className="order-id">
-                  #{order._id.substring(18).toUpperCase()}
-                </td>
-                <td>{new Date(order.createdAt).toLocaleDateString()}</td>
-                <td className="price-cell">${order.totalPrice}</td>
-                <td>
-                  <span
-                    className={`status-pill ${(
-                      order.orderStatus || "pending"
-                    ).toLowerCase()}`}
-                  >
-                    {/* FIX: Changed order.status to order.orderStatus 
-              to match your backend schema 
-          */}
-                    {order.orderStatus || "Pending"}
-                  </span>
-                </td>
-              </tr>
+      {products.length === 0 ? (
+        <div className="empty-state">
+          <FaBoxOpen size={50} color="#cbd5e1" />
+          <p>No products found in inventory.</p>
+        </div>
+      ) : (
+        <>
+          {/* DESKTOP TABLE VIEW */}
+          <div className="desktop-table-view">
+            <table className="products-table">
+              <thead>
+                <tr>
+                  <th>Product Details</th>
+                  <th>Category</th>
+                  <th>Pricing</th>
+                  <th>In Stock</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map((p) => (
+                  <tr key={p._id}>
+                    <td>
+                      <div className="product-cell">
+                        <img
+                          src={
+                            p.images?.[0] ||
+                            p.image ||
+                            "https://via.placeholder.com/60"
+                          }
+                          alt={p.name}
+                          className="product-img"
+                        />
+                        <div className="product-info-text">
+                          <span className="product-name">{p.name}</span>
+                          <span className="product-brand">
+                            {p.brand || "Generic"}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span className="badge-category">{p.category}</span>
+                    </td>
+                    <td>
+                      <div className="price-stack">
+                        <span className="current-price">₹{p.price}</span>
+                        {p.discount > 0 && (
+                          <span className="discount-tag">
+                            -{Math.round(p.discount)}%
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td>
+                      <span
+                        className={`stock-status ${p.stock < 10 ? "low" : "normal"}`}
+                      >
+                        {p.stock}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="actions-cell">
+                        <Link
+                          to={`/admin/edit-product/${p._id}`}
+                          className="edit-icon"
+                          title="Edit"
+                        >
+                          <FaEdit />
+                        </Link>
+                        <button
+                          onClick={() => deleteProduct(p._id)}
+                          className="delete-icon"
+                          title="Delete"
+                        >
+                          <FaTrash />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* MOBILE VIEW */}
+          <div className="mobile-products-view">
+            {products.map((p) => (
+              <div key={p._id} className="product-mobile-card">
+                <div className="product-card-top">
+                  <img
+                    src={
+                      p.images?.[0] ||
+                      p.image ||
+                      "https://via.placeholder.com/80"
+                    }
+                    alt={p.name}
+                    className="mobile-product-img"
+                  />
+                  <div className="mobile-product-details">
+                    <span className="product-name">{p.name}</span>
+                    <span className="badge-category">{p.category}</span>
+                    <div className="mobile-price">
+                      <span className="current-price">₹{p.price}</span>
+                      {p.discount > 0 && (
+                        <span className="discount-tag">
+                          -{Math.round(p.discount)}%
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="product-card-bottom">
+                  <div className="stock-info">
+                    <strong>Stock:</strong>{" "}
+                    <span
+                      className={`stock-status ${p.stock < 10 ? "low" : ""}`}
+                    >
+                      {p.stock} {p.stock < 10 && "(Low)"}
+                    </span>
+                  </div>
+                  <div className="mobile-actions">
+                    <Link
+                      to={`/admin/edit-product/${p._id}`}
+                      className="edit-link"
+                    >
+                      <FaEdit /> Edit
+                    </Link>
+                    <button
+                      onClick={() => deleteProduct(p._id)}
+                      className="delete-btn"
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
+                </div>
+              </div>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
 
-export default AdminDashboard;
+export default AdminProducts;

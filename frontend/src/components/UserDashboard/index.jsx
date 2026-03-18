@@ -9,9 +9,13 @@ import Footer from "../Footer";
 import CartContext from "../../context/CartContext";
 import "./index.css";
 
+// UPDATED: Full Categories List
 const categoriesList = [
   "All",
   "Electronics",
+  "Fashion",
+  "Sports",
+  "Toys",
   "Fruits",
   "Vegetables",
   "Grocery",
@@ -28,7 +32,7 @@ const UserDashboard = ({
   onSearchChange,
 }) => {
   const [products, setProducts] = useState([]);
-  const [totalProducts, setTotalProducts] = useState(0); // Store total count from DB
+  const [totalProducts, setTotalProducts] = useState(0);
   const [sortOrder, setSortOrder] = useState("Default");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -36,7 +40,6 @@ const UserDashboard = ({
   const { addCartItem } = useContext(CartContext);
   const productsPerPage = 9;
 
-  // Fetch when Category, Page, Search, or Sort changes
   useEffect(() => {
     fetchProducts();
   }, [activeCategory, currentPage, searchQuery, sortOrder]);
@@ -44,12 +47,19 @@ const UserDashboard = ({
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      // We pass everything to the URL so the Backend handles the logic
-      let url = `https://mernshoppingbackend-ygpp.onrender.com/api/products?page=${currentPage}&limit=${productsPerPage}&sort=${sortOrder}&search=${searchQuery}`;
+      // Professional URL building using URLSearchParams
+      const params = new URLSearchParams({
+        page: currentPage,
+        limit: productsPerPage,
+        sort: sortOrder,
+        search: searchQuery,
+      });
 
       if (activeCategory !== "All") {
-        url += `&category=${activeCategory}`;
+        params.append("category", activeCategory);
       }
+
+      const url = `https://mernshoppingbackend-ygpp.onrender.com/api/products?${params.toString()}`;
 
       const res = await fetch(url);
       const data = await res.json();
@@ -83,7 +93,7 @@ const UserDashboard = ({
         searchQuery={searchQuery}
         onSearchChange={(val) => {
           onSearchChange(val);
-          setCurrentPage(1); // Reset to page 1 when searching
+          setCurrentPage(1);
         }}
       />
 
@@ -136,7 +146,7 @@ const UserDashboard = ({
 
           {loading ? (
             <div className="loader-box">
-              <ClipLoader color="#ff7011" />
+              <ClipLoader color="#f97316" />
             </div>
           ) : (
             <div className="product-grid">
@@ -149,7 +159,11 @@ const UserDashboard = ({
                           {Math.round(product.discount)}% OFF
                         </span>
                       )}
-                      <img src={product.images?.[0]} alt={product.name} />
+                      <img
+                        src={product.images?.[0]}
+                        alt={product.name}
+                        loading="lazy"
+                      />
                     </div>
 
                     <div className="card-details">
@@ -166,10 +180,12 @@ const UserDashboard = ({
                         </span>
                       </div>
                       <div className="price-container">
-                        <span className="sale-price">₹{product.price}</span>
+                        <span className="sale-price">
+                          ₹{product.price.toLocaleString("en-IN")}
+                        </span>
                         {product.originalPrice && (
                           <span className="mrp-price">
-                            ₹{product.originalPrice}
+                            ₹{product.originalPrice.toLocaleString("en-IN")}
                           </span>
                         )}
                       </div>
@@ -181,7 +197,7 @@ const UserDashboard = ({
                       </Link>
                       <button
                         className="add-btn"
-                        onClick={() => addCartItem(product._id)}
+                        onClick={() => addCartItem(product)}
                       >
                         Add To Cart
                       </button>
@@ -189,9 +205,11 @@ const UserDashboard = ({
                   </div>
                 ))
               ) : (
-                <p className="no-products">
-                  No products found matching your criteria.
-                </p>
+                <div className="no-products-view">
+                  <p className="no-products">
+                    No products found for this filter.
+                  </p>
+                </div>
               )}
             </div>
           )}
@@ -201,15 +219,17 @@ const UserDashboard = ({
               <button
                 disabled={currentPage === 1}
                 onClick={() => handlePageChange(currentPage - 1)}
+                className="pag-btn"
               >
                 <FiChevronLeft />
               </button>
-              <span>
-                Page {currentPage} of {totalPages}
+              <span className="page-info">
+                Page <strong>{currentPage}</strong> of {totalPages}
               </span>
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => handlePageChange(currentPage + 1)}
+                className="pag-btn"
               >
                 <FiChevronRight />
               </button>

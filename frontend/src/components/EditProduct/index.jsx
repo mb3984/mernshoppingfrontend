@@ -6,17 +6,18 @@ const EditProduct = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // Updated state to match your Mongoose Schema
   const [product, setProduct] = useState({
     name: "",
     brand: "Generic",
     description: "",
-    images: "", // We'll handle this as a string and convert to array for the DB
+    images: "",
     category: "Electronics",
     price: "",
     originalPrice: "",
     stock: "",
     isFeatured: false,
+    sizes: "", // Added for Fashion/Sports
+    colors: "", // Added for Fashion
   });
 
   const [loading, setLoading] = useState(true);
@@ -35,13 +36,14 @@ const EditProduct = () => {
           name: p.name || "",
           brand: p.brand || "Generic",
           description: p.description || "",
-          // Convert array back to comma-separated string for easy editing
           images: p.images ? p.images.join(", ") : "",
           category: p.category || "Electronics",
           price: p.price || "",
           originalPrice: p.originalPrice || "",
           stock: p.stock || "",
           isFeatured: p.isFeatured || false,
+          sizes: p.sizes ? p.sizes.join(", ") : "", // Convert array to string
+          colors: p.colors ? p.colors.join(", ") : "", // Convert array to string
         });
       } else {
         setError("Product not found");
@@ -75,10 +77,25 @@ const EditProduct = () => {
       return;
     }
 
-    // Convert images string back to array and ensure numbers are numbers
+    // Prepare data for API
     const updatedData = {
       ...product,
-      images: product.images.split(",").map((img) => img.trim()),
+      images: product.images
+        .split(",")
+        .map((img) => img.trim())
+        .filter((i) => i !== ""),
+      sizes: product.sizes
+        ? product.sizes
+            .split(",")
+            .map((s) => s.trim())
+            .filter((s) => s !== "")
+        : [],
+      colors: product.colors
+        ? product.colors
+            .split(",")
+            .map((c) => c.trim())
+            .filter((c) => c !== "")
+        : [],
       price: Number(product.price),
       originalPrice: Number(product.originalPrice),
       stock: Number(product.stock),
@@ -99,7 +116,7 @@ const EditProduct = () => {
 
       if (response.ok) {
         alert("Product updated successfully ✅");
-        navigate("/admin/products"); // Updated to match typical admin route
+        navigate("/admin/products");
       } else {
         alert("Failed to update product ❌");
       }
@@ -146,6 +163,9 @@ const EditProduct = () => {
               onChange={handleChange}
             >
               <option value="Electronics">Electronics</option>
+              <option value="Fashion">Fashion</option>
+              <option value="Sports">Sports</option>
+              <option value="Toys">Toys</option>
               <option value="Fruits">Fruits</option>
               <option value="Vegetables">Vegetables</option>
               <option value="Grocery">Grocery</option>
@@ -168,12 +188,37 @@ const EditProduct = () => {
           />
         </div>
 
+        {/* Dynamic Fields for Fashion/Sports */}
+        {(product.category === "Fashion" || product.category === "Sports") && (
+          <div className="form-row">
+            <div className="form-group">
+              <label>Sizes (e.g. S, M, L, XL)</label>
+              <input
+                type="text"
+                name="sizes"
+                value={product.sizes}
+                onChange={handleChange}
+                placeholder="Small, Medium..."
+              />
+            </div>
+            <div className="form-group">
+              <label>Colors (e.g. Red, Blue, Black)</label>
+              <input
+                type="text"
+                name="colors"
+                value={product.colors}
+                onChange={handleChange}
+                placeholder="Black, White..."
+              />
+            </div>
+          </div>
+        )}
+
         <div className="form-group">
           <label>Image URLs (comma separated)</label>
           <input
             type="text"
             name="images"
-            placeholder="url1, url2, url3"
             value={product.images}
             onChange={handleChange}
             required
@@ -182,7 +227,7 @@ const EditProduct = () => {
 
         <div className="form-row">
           <div className="form-group">
-            <label>Current Price ($)</label>
+            <label>Current Price (₹)</label>
             <input
               type="number"
               name="price"
@@ -192,7 +237,7 @@ const EditProduct = () => {
             />
           </div>
           <div className="form-group">
-            <label>Original Price ($)</label>
+            <label>Original Price (₹)</label>
             <input
               type="number"
               name="originalPrice"

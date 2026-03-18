@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import "./index.css";
 
 const AddProduct = () => {
@@ -13,6 +12,8 @@ const AddProduct = () => {
     originalPrice: "",
     stock: "",
     isFeatured: false,
+    sizes: "", // Added
+    colors: "", // Added
   });
 
   const handleChange = (e) => {
@@ -27,6 +28,29 @@ const AddProduct = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("jwt_token");
+
+      // Data preparation
+      const payload = {
+        ...product,
+        images: [product.image],
+        price: Number(product.price),
+        originalPrice: Number(product.originalPrice),
+        stock: Number(product.stock),
+        // Convert strings to arrays for the database
+        sizes: product.sizes
+          ? product.sizes.split(",").map((s) => s.trim())
+          : [],
+        colors: product.colors
+          ? product.colors.split(",").map((c) => c.trim())
+          : [],
+        discount:
+          product.originalPrice > 0
+            ? ((product.originalPrice - product.price) /
+                product.originalPrice) *
+              100
+            : 0,
+      };
+
       const response = await fetch(
         "https://mernshoppingbackend-ygpp.onrender.com/api/products",
         {
@@ -35,21 +59,7 @@ const AddProduct = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({
-            name: product.name,
-            brand: product.brand,
-            description: product.description,
-            images: [product.image],
-            category: product.category,
-            price: Number(product.price),
-            originalPrice: Number(product.originalPrice),
-            discount:
-              ((product.originalPrice - product.price) /
-                product.originalPrice) *
-              100,
-            stock: Number(product.stock),
-            isFeatured: product.isFeatured,
-          }),
+          body: JSON.stringify(payload),
         },
       );
 
@@ -67,6 +77,8 @@ const AddProduct = () => {
           originalPrice: "",
           stock: "",
           isFeatured: false,
+          sizes: "",
+          colors: "",
         });
       } else {
         alert(data.message || "Failed to add product");
@@ -78,23 +90,23 @@ const AddProduct = () => {
   };
 
   return (
-    <>
-      <div className="add-product-bg">
-        <div className="add-product-card">
-          <h1 className="add-product-title">Add New Product</h1>
-          <form onSubmit={handleSubmit} className="add-product-form">
-            <div className="input-group">
-              <label>Product Name</label>
-              <input
-                type="text"
-                name="name"
-                placeholder="e.g. Sony WH-1000XM5"
-                value={product.name}
-                onChange={handleChange}
-                required
-              />
-            </div>
+    <div className="add-product-bg">
+      <div className="add-product-card">
+        <h1 className="add-product-title">Add New Product</h1>
+        <form onSubmit={handleSubmit} className="add-product-form">
+          <div className="input-group">
+            <label>Product Name</label>
+            <input
+              type="text"
+              name="name"
+              placeholder="e.g. Sony WH-1000XM5"
+              value={product.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
+          <div className="row-group">
             <div className="input-group">
               <label>Brand</label>
               <input
@@ -105,30 +117,6 @@ const AddProduct = () => {
                 onChange={handleChange}
               />
             </div>
-
-            <div className="input-group">
-              <label>Description</label>
-              <textarea
-                name="description"
-                placeholder="Describe the product features..."
-                value={product.description}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="input-group">
-              <label>Image URL</label>
-              <input
-                type="text"
-                name="image"
-                placeholder="https://example.com/image.jpg"
-                value={product.image}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
             <div className="input-group">
               <label>Category</label>
               <select
@@ -137,6 +125,9 @@ const AddProduct = () => {
                 onChange={handleChange}
               >
                 <option value="Electronics">Electronics</option>
+                <option value="Fashion">Fashion</option>
+                <option value="Sports">Sports</option>
+                <option value="Toys">Toys</option>
                 <option value="Fruits">Fruits</option>
                 <option value="Vegetables">Vegetables</option>
                 <option value="Grocery">Grocery</option>
@@ -146,32 +137,84 @@ const AddProduct = () => {
                 <option value="Drinks">Drinks</option>
               </select>
             </div>
+          </div>
 
-            <div className="row-group">
+          <div className="input-group">
+            <label>Description</label>
+            <textarea
+              name="description"
+              placeholder="Describe the product features..."
+              value={product.description}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          {/* Conditional Fields for Fashion & Sports */}
+          {(product.category === "Fashion" ||
+            product.category === "Sports") && (
+            <div className="row-group animate-fade">
               <div className="input-group">
-                <label>Original Price</label>
+                <label>Sizes (S, M, L)</label>
                 <input
-                  type="number"
-                  name="originalPrice"
-                  placeholder="0.00"
-                  value={product.originalPrice}
+                  type="text"
+                  name="sizes"
+                  placeholder="S, M, L, XL"
+                  value={product.sizes}
                   onChange={handleChange}
-                  required
                 />
               </div>
               <div className="input-group">
-                <label>Selling Price</label>
+                <label>Colors</label>
                 <input
-                  type="number"
-                  name="price"
-                  placeholder="0.00"
-                  value={product.price}
+                  type="text"
+                  name="colors"
+                  placeholder="Red, Black"
+                  value={product.colors}
                   onChange={handleChange}
-                  required
                 />
               </div>
             </div>
+          )}
 
+          <div className="input-group">
+            <label>Image URL</label>
+            <input
+              type="text"
+              name="image"
+              placeholder="https://example.com/image.jpg"
+              value={product.image}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="row-group">
+            <div className="input-group">
+              <label>Original Price (₹)</label>
+              <input
+                type="number"
+                name="originalPrice"
+                placeholder="0.00"
+                value={product.originalPrice}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="input-group">
+              <label>Selling Price (₹)</label>
+              <input
+                type="number"
+                name="price"
+                placeholder="0.00"
+                value={product.price}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="row-group">
             <div className="input-group">
               <label>Stock Count</label>
               <input
@@ -183,7 +226,6 @@ const AddProduct = () => {
                 required
               />
             </div>
-
             <div className="checkbox-container">
               <input
                 type="checkbox"
@@ -194,14 +236,14 @@ const AddProduct = () => {
               />
               <label htmlFor="isFeatured">Featured Product</label>
             </div>
+          </div>
 
-            <button type="submit" className="add-btn">
-              Add Product
-            </button>
-          </form>
-        </div>
+          <button type="submit" className="add-btn">
+            Create Product
+          </button>
+        </form>
       </div>
-    </>
+    </div>
   );
 };
 

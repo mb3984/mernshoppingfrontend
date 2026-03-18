@@ -1,12 +1,15 @@
+/* --- ROOT WRAPPER --- */
 .navbar-container {
-  background-color: #1f2937; /* Dark background matching screenshot */
+  background-color: #1f2937; /* Dark Gray from your theme */
   color: white;
   width: 100%;
   position: sticky;
   top: 0;
   z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* --- MAIN NAVBAR (TOP BAR) --- */
 .navbar-main {
   max-width: 1400px;
   margin: 0 auto;
@@ -26,10 +29,10 @@
 }
 
 .logo-box {
-  background-color: #f97316; /* Orange brand color */
+  background-color: #f97316; /* Primary Orange */
   color: white;
   padding: 5px 12px;
-  border-radius: 4px;
+  border-radius: 6px;
   font-weight: 900;
   font-size: 1.2rem;
 }
@@ -37,36 +40,43 @@
 .logo-text {
   font-size: 1.4rem;
   font-weight: bold;
+  letter-spacing: 0.5px;
 }
 
 /* Search Bar Styling */
 .navbar-search {
-  flex: 0 1 500px; /* Expands to a max of 500px */
+  flex: 0 1 500px;
   display: flex;
-  margin: 0 20px;
+  margin: 0 30px;
 }
 
 .search-input {
   width: 100%;
   padding: 10px 15px;
-  border: none;
-  border-radius: 4px 0 0 4px;
+  border: 1px solid transparent;
+  border-radius: 6px 0 0 6px;
   outline: none;
-  color: #333;
+  color: #1e293b;
+  font-size: 0.95rem;
 }
 
 .search-button {
   background-color: #f97316;
   border: none;
-  padding: 0 18px;
+  padding: 0 20px;
   color: white;
-  border-radius: 0 4px 4px 0;
+  border-radius: 0 6px 6px 0;
   cursor: pointer;
   display: flex;
   align-items: center;
+  transition: background 0.3s;
 }
 
-/* Action Items Styling */
+.search-button:hover {
+  background-color: #ea580c;
+}
+
+/* Action Items (User, Cart, Logout) */
 .navbar-actions {
   display: flex;
   gap: 25px;
@@ -81,6 +91,15 @@
   text-decoration: none;
   font-size: 0.95rem;
   cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.action-item:hover {
+  opacity: 0.8;
+}
+
+.action-icon {
+  font-size: 1.2rem;
 }
 
 .cart-icon-wrapper {
@@ -89,37 +108,41 @@
 
 .cart-badge {
   position: absolute;
-  top: -8px;
-  right: -10px;
+  top: -10px;
+  right: -12px;
   background-color: #f97316;
   color: white;
   font-size: 11px;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   font-weight: bold;
+  border: 2px solid #1f2937;
 }
 
 .logout-icon-btn {
   background: transparent;
   border: none;
   color: #9ca3af;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
 }
 
 .logout-icon-btn:hover {
-  color: #f87171;
+  color: #f87171; /* Red on hover */
+  transform: scale(1.1);
 }
 
-/* Sub-nav Styling (White bar below dark bar) */
+/* --- SUB NAVBAR (CATEGORY BAR) --- */
 .navbar-sub {
-  background-color: white;
-  border-bottom: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .sub-nav-links {
@@ -127,8 +150,8 @@
   margin: 0 auto;
   list-style: none;
   display: flex;
-  gap: 30px;
-  padding: 10px 20px;
+  gap: 25px;
+  padding: 12px 20px;
 }
 
 .sub-nav-links li {
@@ -136,6 +159,10 @@
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  position: relative;
+  padding-bottom: 4px;
 }
 
 .sub-nav-links li:hover {
@@ -144,81 +171,56 @@
 
 .active-sub-link {
   color: #f97316 !important;
-  font-weight: bold;
-  border-bottom: 2px solid #f97316;
+  font-weight: bold !important;
 }
 
-.sub-nav-links li {
-  cursor: pointer;
-  padding-bottom: 5px;
-  transition: all 0.2s ease;
+.active-sub-link::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #f97316;
 }
 
-.sub-nav-links li:hover {
-  color: #f97316;
-}
-
-/* ... Keep all your existing CSS from the top exactly as it is ... */
-
-/* Find your @media (max-width: 768px) section and REPLACE IT with this: */
-
+/* --- MOBILE RESPONSIVENESS --- */
 @media (max-width: 768px) {
   .navbar-main {
-    flex-wrap: wrap;
-    padding: 10px;
-    justify-content: space-between;
+    padding: 10px 15px;
   }
 
-  .navbar-logo {
-    flex: 1;
-  }
-
-  .navbar-actions {
-    gap: 15px; /* Slightly adjusted for better spacing */
-  }
-
-  /* FIX: Hide only the text labels, NOT the badge */
+  /* Hide labels to save space */
   .label-text,
   .logo-text {
     display: none;
   }
 
-  /* Ensure badge is properly positioned on mobile */
-  .cart-badge {
-    display: flex;
-    top: -10px;
-    right: -12px;
-    width: 16px;
-    height: 16px;
-    font-size: 10px;
-  }
-
   .navbar-search {
     order: 3;
     flex: 1 1 100%;
-    margin: 10px 0 0 0;
+    margin: 10px 0 5px 0;
   }
 
-  .navbar-sub {
-    padding: 0;
+  .navbar-actions {
+    gap: 15px;
   }
 
+  /* HORIZONTAL SCROLL FOR CATEGORIES */
   .sub-nav-links {
-    display: flex;
     overflow-x: auto;
-    white-space: nowrap;
     gap: 20px;
-    padding: 12px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    padding: 12px 15px;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE */
   }
 
   .sub-nav-links::-webkit-scrollbar {
-    display: none;
+    display: none; /* Chrome/Safari */
   }
 
   .sub-nav-links li {
     font-size: 0.85rem;
-    flex-shrink: 0;
+    flex-shrink: 0; /* Prevents text from squishing */
   }
 }

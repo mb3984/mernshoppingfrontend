@@ -17,9 +17,13 @@ const Navbar = ({
   const storedUser = localStorage.getItem("user");
   const userData = storedUser ? JSON.parse(storedUser) : { name: "Guest" };
 
+  // UPDATED: Added Fashion, Toys, and Sports
   const categories = [
     "All",
     "Electronics",
+    "Fashion",
+    "Sports",
+    "Toys",
     "Fruits",
     "Vegetables",
     "Grocery",
@@ -29,9 +33,7 @@ const Navbar = ({
     "Drinks",
   ];
 
-  // Helper to handle navigation back to the product list
   const navigateToDashboard = () => {
-    // If we aren't on the dashboard (e.g., on /cart or /my-orders), go there
     if (location.pathname !== "/user-dashboard") {
       navigate("/user-dashboard");
     }
@@ -44,7 +46,6 @@ const Navbar = ({
 
   const handleSearchChange = (value) => {
     onSearchChange(value);
-    // If user starts typing while on another page, send them to results
     if (value !== "" && location.pathname !== "/user-dashboard") {
       navigate("/user-dashboard");
     }
@@ -53,13 +54,11 @@ const Navbar = ({
   return (
     <header className="navbar-container">
       <div className="navbar-main">
-        {/* Logo links to dashboard for users */}
         <Link to="/user-dashboard" className="navbar-logo">
           <div className="logo-box">S</div>
           <span className="logo-text">ShopVerse</span>
         </Link>
 
-        {/* Search Bar */}
         <div className="navbar-search">
           <input
             type="text"

@@ -237,3 +237,87 @@
     border-radius: 8px;
   }
 }
+/* Pricing Stack */
+.price-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.discount-tag {
+  color: #16a34a;
+  font-size: 11px;
+  font-weight: 700;
+  background: #f0fdf4;
+  padding: 2px 6px;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+/* Category Badge */
+.badge-category {
+  background: #f1f5f9;
+  color: #475569;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Stock Status Colors */
+.stock-status {
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.stock-status.low {
+  background: #fef2f2;
+  color: #ef4444;
+  border: 1px solid #fee2e2;
+}
+
+.stock-status.normal {
+  color: #1e293b;
+}
+
+/* Empty State & Loader */
+.admin-loader,
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* Header Improvements */
+.header-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.sub-text {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Desktop Cell Alignments */
+.actions-cell {
+  display: flex;
+  gap: 10px;
+}
+
+/* Mobile Action Fixes */
+.edit-link {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+}

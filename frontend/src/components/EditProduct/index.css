@@ -92,3 +92,23 @@
     flex-direction: column;
   }
 }
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 25px; /* Alignment fix */
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+}
+
+/* For responsive mobile edit view */
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}
